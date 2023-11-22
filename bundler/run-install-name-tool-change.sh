@@ -10,14 +10,14 @@ WRONG_PREFIX=$2
 RIGHT_PREFIX="@executable_path/../$3"
 ACTION=$4
 
-chmod u+w $LIBRARY
+chmod u+w "$LIBRARY"
 
 if [ "x$ACTION" = "xchange" ]; then
-    libs="`otool -L $LIBRARY 2>/dev/null | fgrep compatibility | cut -d\( -f1 | grep $WRONG_PREFIX | sort | uniq`"
+    libs="`otool -L \"$LIBRARY\" 2>/dev/null | fgrep compatibility | cut -d\( -f1 | grep $WRONG_PREFIX | sort | uniq`"
     for lib in $libs; do
 	if ! echo $lib | grep --silent "@executable_path" ; then
 	    fixed=`echo $lib | sed -e s,\${WRONG_PREFIX},\${RIGHT_PREFIX},`
-	    install_name_tool -change $lib $fixed $LIBRARY
+	    install_name_tool -change "$lib" "$fixed" "$LIBRARY"
 	fi
     done;
 elif [ "x$ACTION" = "xid" ]; then
@@ -25,7 +25,7 @@ elif [ "x$ACTION" = "xid" ]; then
     lib=$(otool -D "$LIBRARY" 2>/dev/null | grep ^"$WRONG_PREFIX" | sed s,"$WRONG_PREFIX",,)
     if [ $lib ]; then
 #        echo "Rewrite $lib"
-        install_name_tool -id "${RIGHT_PREFIX}/${lib}" $LIBRARY;
+        install_name_tool -id "${RIGHT_PREFIX}/${lib}" "$LIBRARY";
 #    else
 #        path=$(otool -D "$LIBRARY" 2>/dev/null | sed -n 2p)
 #        echo "Empty Result $path"

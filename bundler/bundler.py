@@ -421,7 +421,7 @@ class Bundler(object):
 
         # Get strings from binaries.
         for f in self.list_copied_binaries():
-            p = subprocess.run("strings " + f, shell=True, stdout=subprocess.PIPE, text=True, errors='ignore')
+            p = subprocess.run("strings \"" + f + "\"", shell=True, stdout=subprocess.PIPE, text=True, errors='ignore')
             for string in p.stdout.splitlines():
                 string = string.strip()
                 strings.add(string)
